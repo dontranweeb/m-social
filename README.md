@@ -1,7 +1,7 @@
 # m-social
 
 
-To install dependicies for server and client
+To install dependencies for server and client
 
 ```
 cd server

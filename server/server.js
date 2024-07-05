@@ -1,35 +1,33 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose')
+const v1UsersRoutes = require('./routes/v1/users')
+
+
 const app = express();
 dotenv.config();
 
-const { MongoClient } = require("mongodb");
 
-
-// ur url in .env file
+// use environment variables
 const uri = process.env.uri
 const port = process.env.port
 
-
-const client = new MongoClient(uri);
-
-
-
-const db = process.env.db;
-const database = client.db(db);
-
-const c = process.env.collection;
-const coll = database.collection(c)
- 
-const doc = { "name": "Dan Daniel Dan", "email": "dandandan@dan.com", "password":"notdan"};
-
-var result = coll.insertOne(doc);
-
-console.log('A document was isnerted with the _id: ${result.insertedId}');
+// middleware
+app.use(express.json())
 
 
+// define routes
+app.use('/v1/', v1UsersRoutes)
 
-  app.listen(port, () => {
-    console.log('Running on port 3001!')
+
+// connect to mongoDB & start server
+mongoose.connect(uri)
+  .then(() => {
+    console.log('MongoDB connected')
+    app.listen(port, () => {
+      console.log(`Running on port ${port}!`)
+    })
   })
-  
+  .catch((err) => {
+    console.log(err)
+  })
