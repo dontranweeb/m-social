@@ -11,6 +11,7 @@ dotenv.config();
 // use environment variables
 const uri = process.env.uri
 const port = process.env.port
+const test =  "string"
 
 // middleware
 app.use(express.json())
