@@ -3,22 +3,27 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const PostSchema = new Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
+    author: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'User',
         required: true
     },
     textContent: {
         type: String
     },
-    image: {
+    imageUrl: {
         type: String
     },
-    audio: {
+    audioUrl: {
         type: String
     },
-    video: {
+    videoUrl: {
         type: String
-    }
+    },
+    replies: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Reply'
+    }]
 }, { timestamps: true })
 
 module.exports = mongoose.model("Post", PostSchema)
