@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const PostSchema = new Schema({
-    userID: {
-        type: ObjectId,
+    userId: {
+        type: Schema.Types.ObjectId,
         required: true
     },
     textContent: {
@@ -21,4 +21,4 @@ const PostSchema = new Schema({
     }
 }, { timestamps: true })
 
-module.exports = mongoose.Model("Post", PostSchema)
+module.exports = mongoose.model("Post", PostSchema)
