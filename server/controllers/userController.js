@@ -22,12 +22,12 @@ const authenticateUser = async(req, res, next) => {
         if (!user) {
             return res.status(404).json({mssg: "User not found"})
         }
-        const isMatch = bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             return res.status(401).json({mssg: "Incorrect password"})
         }
-        res.status(200).json(user)
-        //res.redirect('/')
+        //res.status(200).json(user)
+        res.redirect('/')
     } catch(err) {
         res.status(500).json({error: err.message})
     }
