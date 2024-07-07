@@ -1,15 +1,15 @@
 const Post = require('../models/post')
 
 const createPost = async (req, res, next) => {
-    const {userId, textContent, image, video, audio} = req.body
+    const {authorId, textContent, imageUrl, videoUrl, audioUrl} = req.body
     try {
-        if (!userId) {
+        if (!authorId) {
             return res.status(404).json({"Error": "Invalid UserID"})
         }
-        if (!textContent && !image && !video && !audio) {
+        if (!textContent && !imageUrl && !videoUrl && !audioUrl) {
             return res.status(400).json({"Error": "No content exists"})
         }
-        const post = await Post.create({userId, textContent, audio, image, video})
+        const post = await Post.create({authorId, textContent, audioUrl, imageUrl, videoUrl})
         res.status(200).json(post)
     } catch(err) {
         res.status(400).json(err)
