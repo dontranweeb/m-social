@@ -1,6 +1,7 @@
 const express = require('express')
 const {
-    createUser
+    createUser,
+    authenticateUser
 } = require('../../controllers/userController')
 const {
     hashPassword
@@ -8,6 +9,7 @@ const {
 
 const router = express.Router()
 
-router.post('/users', hashPassword, createUser)
+router.post('/SignUp', hashPassword, createUser)
+router.post('/Login', hashPassword, authenticateUser)
 
 module.exports = router
