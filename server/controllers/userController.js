@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 
 
 const createUser = async (req, res, next) => {
-    const {email, password, firstName, lastName} = req.body
+    const { email, password, firstName, lastName } = req.body
 
     try {
         const user = await User.create({email, password, firstName, lastName})
@@ -17,7 +17,7 @@ const createUser = async (req, res, next) => {
 }
 
 const authenticateUser = async(req, res, next) => {
-    const {email, password} = req.body
+    const { email, password } = req.body
     //console.log(email)
     try {
         const user = await User.findOne({email: email})
