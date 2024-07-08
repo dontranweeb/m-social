@@ -1,6 +1,9 @@
 const User = require('../models/user')
+
+
 const bcrypt = require('bcrypt')
 //const asyncHandler = require('express-async-handler')
+
 
 const createUser = async (req, res, next) => {
     const {email, password, firstName, lastName} = req.body
