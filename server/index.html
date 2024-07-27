@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Express Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Express Server</h1>
+    <button id="testButton">Test Server Connection</button>
+    <div id="response"></div>
+
+    <h2>Get All Users</h2>
+    <button id="getUsersButton">Get All Users</button>
+    <div id="getUsersResponse" class="response"></div>
+
+    <h2>Add a User</h2>
+    <form id="addUserForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Add User</button>
+    </form>
+    <div id="addUserResponse" class="response"></div>
+
+    <script>
+        document.getElementById('testButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://localhost:3001/');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const text = await response.text();
+                document.getElementById('response').innerText = text;
+            } catch (error) {
+                document.getElementById('response').innerText = 'Error: ' + error.message;
+            }
+        });
+
+        document.getElementById('getUsersButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://localhost:3001/user');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const json = await response.json();
+                document.getElementById('getUsersResponse').innerText = JSON.stringify(json, null, 2);
+            } catch (error) {
+                document.getElementById('getUsersResponse').innerText = 'Error: ' + error.message;
+            }
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:3001/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const json = await response.json();
+                document.getElementById('addUserResponse').innerText = 'User added with ID: ' + json._id;
+            } catch (error) {
+                document.getElementById('addUserResponse').innerText = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
