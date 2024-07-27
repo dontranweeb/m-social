@@ -10,14 +10,12 @@ function App() {
     spacing: 8,
   };
   return (
-    <Container maxWidth="sm" sx={{ pt: 8, height: "100%" }}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/SignUp" element={<SignUp />} />
-        </Routes>
-      </Router>
-    </Container>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/SignUp" element={<SignUp />} />
+      </Routes>
+    </Router>
   );
 }
 
