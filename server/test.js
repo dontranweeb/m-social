@@ -13,7 +13,10 @@ const app = express();
 const Test = require("./models/testModel");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // connect to mongoDB & start server
 mongoose.connect(uri)
@@ -31,6 +34,7 @@ app.get("/", async (req, res) => {
 
 
 // GET all users from mongoDB
+/*
 app.get("/user", async (req, res) => {
   try {
     const docs = await Test.find();
@@ -39,24 +43,32 @@ app.get("/user", async (req, res) => {
     res.status(500).json({error: "Error getting user documents"})
   }
 });
+*/
 
+const { MongoClient } = require("mongodb");
+
+const client = new MongoClient(uri);
+const db = process.env.db;
+const database = client.db(db);
+
+const c = process.env.collection;
+const coll = database.collection(c)
+ 
 app.post("/user", async (req, res) => {
-  const { name, email, password } = req.body;
   try {
-    const doc = new Test({ name, email, password});
-    const saveDoc = await doc.save();
-    res.status(201).json({_id: saveDoc._id });
+    const { firstName, lastName, Email, Password, birthDate, userName } = req.body;
+    console.log(req.body);
+    //const saveDoc = await doc.save();
+    //res.status(201).json({_id: saveDoc._id });
+    const result = coll.insertOne(req.body);
+    console.log(`New user!!!${result}`);
   } catch (error) {
     res.status(500).json({error: "error adding user"});
   }
+  res.redirect("/");
 })
 
-app.listen(port, () => {
-  console.log(`Running on port ${port}!`)
-})
 
-//const client = new MongoClient(uri);
-//const { MongoClient } = require("mongodb");
 //run this to check if your creditionals are right
 /*
 async function run() {
@@ -166,7 +178,7 @@ run().catch(console.dir);
 
 
 // DELETE POST TEST
-
+/*
 async function run() {
   try {
     const database = client.db("postsDB");
@@ -189,8 +201,8 @@ async function run() {
 }
 // Run the program and print any thrown exceptions
 run().catch(console.dir);
-
+*/
 
 app.listen(port, () => {
-  console.log('Running on port 3000!')
+  console.log(`Running on port ${port}!`)
 })
