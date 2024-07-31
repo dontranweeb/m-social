@@ -58,7 +58,7 @@ app.get("/users/:id", async (req, res) => {
 });
 
 //  POSTs user to test/tests collection
-app.post("/users", async (req, res) => {
+app.post("/users", hashPassword, async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const user = new Test({ name, email, password });
@@ -222,7 +222,7 @@ run().catch(console.dir);
 
 
 // DELETE POST TEST
-
+/*
 async function run() {
   try {
     const database = client.db("postsDB");
@@ -250,3 +250,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log('Running on port 3000!')
 })
+*/
