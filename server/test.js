@@ -14,7 +14,10 @@ const Test = require("./models/testModel");
 const { hashPassword } = require('./middleware/auth');
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // connect to mongoDB & start server
 mongoose.connect(uri)
@@ -41,6 +44,9 @@ app.get("/users", async (req, res) => {
   }
 });
 
+
+const { MongoClient } = require("mongodb");
+
 // GETs a single user from test/tests collection
 
 app.get("/users/:id", async (req, res) => {
@@ -64,6 +70,22 @@ app.post("/users", hashPassword, async (req, res) => {
     const user = new Test({ name, email, password });
     const saveUser = await user.save();
     res.status(201).json({ _id: saveUser._id });
+
+const client = new MongoClient(uri);
+const db = process.env.db;
+const database = client.db(db);
+
+const c = process.env.collection;
+const coll = database.collection(c)
+ 
+app.post("/user", async (req, res) => {
+  try {
+    const { firstName, lastName, Email, Password, birthDate, userName } = req.body;
+    console.log(req.body);
+    //const saveDoc = await doc.save();
+    //res.status(201).json({_id: saveDoc._id });
+    const result = coll.insertOne(req.body);
+    console.log(`New user!!!${result}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -110,9 +132,9 @@ app.put("/users/:id", hashPassword, async (req, res) => {
 app.listen(port, () => {
   console.log(`Running on port ${port}!`)
 });
+  res.redirect("/");
+})
 
-//const client = new MongoClient(uri);
-//const { MongoClient } = require("mongodb");
 //run this to check if your creditionals are right
 /*
 async function run() {
@@ -245,9 +267,9 @@ async function run() {
 }
 // Run the program and print any thrown exceptions
 run().catch(console.dir);
-
+*/
 
 app.listen(port, () => {
-  console.log('Running on port 3000!')
+  console.log(`Running on port ${port}!`)
 })
 */
