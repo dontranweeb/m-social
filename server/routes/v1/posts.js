@@ -1,5 +1,7 @@
 const express = require('express')
 const {
+    getAllPosts,
+    getPostById,
     createPost,
     deletePost,
     updatePost
@@ -7,6 +9,8 @@ const {
 
 const router = express.Router()
 
+router.get("/posts", getAllPosts)
+router.get("/posts/:id", getPostById)
 router.post('/posts', createPost)
 router.delete('/posts/:id', deletePost)
 router.patch('/posts/:id', updatePost)

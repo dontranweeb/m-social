@@ -11,6 +11,7 @@ const port = process.env.port
 
 const app = express();
 const Test = require("./models/testModel");
+const { hashPassword } = require('./middleware/auth');
 
 app.use(express.json());
 app.use(cors({
@@ -33,19 +34,42 @@ app.get("/", async (req, res) => {
 });
 
 
-// GET all users from mongoDB
-/*
-app.get("/user", async (req, res) => {
+// GETs all users from test/tests collection
+app.get("/users", async (req, res) => {
   try {
-    const docs = await Test.find();
-    res.status(200).json(docs);
+    const users = await Test.find();
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({error: "Error getting user documents"})
+    res.status(500).json({ error: "Error getting users" })
   }
 });
-*/
+
 
 const { MongoClient } = require("mongodb");
+
+// GETs a single user from test/tests collection
+
+app.get("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const user = await Test.findById(id);
+    if(!user) {
+      return res.status(404).json({ error: "User was not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//  POSTs user to test/tests collection
+app.post("/users", hashPassword, async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const user = new Test({ name, email, password });
+    const saveUser = await user.save();
+    res.status(201).json({ _id: saveUser._id });
 
 const client = new MongoClient(uri);
 const db = process.env.db;
@@ -63,11 +87,53 @@ app.post("/user", async (req, res) => {
     const result = coll.insertOne(req.body);
     console.log(`New user!!!${result}`);
   } catch (error) {
-    res.status(500).json({error: "error adding user"});
+    res.status(500).json({ error: error.message });
   }
+});
+
+// DELETE user from test/tests collection
+app.delete("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const user = await Test.findByIdAndDelete(id);
+    if(!user) {
+      return res.status(404).json({ error: "User was not found" });
+    }
+    res.status(200).json({ msg: "User has been deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+});
+
+// UPDATE user from test/tests collection
+app.put("/users/:id", hashPassword, async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password} = req.body;
+
+  try {
+    const user = await Test.findByIdAndUpdate(id);
+    if (!user) {
+      return res.status(200).json({ error: "User was not found" });
+    }
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    if(password) {
+      user.password = password;
+    }
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Running on port ${port}!`)
+});
   res.redirect("/");
 })
-
 
 //run this to check if your creditionals are right
 /*
@@ -206,3 +272,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Running on port ${port}!`)
 })
+*/
