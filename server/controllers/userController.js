@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt')
 const createUser = async (req, res, next) => {
     const { email, password, firstName, lastName } = req.body
 
+    console.log("trying to create user")
+
     try {
         const user = await User.create({email, password, firstName, lastName})
         res.status(200).json(user)

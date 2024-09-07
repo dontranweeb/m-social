@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose')
 const v1UsersRoutes = require('./routes/v1/users')
 const v1PostsRoutes = require('./routes/v1/posts')
-
+const cors = require('cors')
 
 const app = express();
 dotenv.config();
@@ -15,6 +15,10 @@ const port = process.env.port
 
 // middleware
 app.use(express.json())
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true, // Important for `withCredentials: true`
+}))
 
 
 // define routes
