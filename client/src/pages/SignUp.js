@@ -16,7 +16,7 @@ function SignUp() {
       console.log('Submitting data:', data);
 
       const response = await axios.post(
-        "http://localhost:3001/user",
+        "http://localhost:3001/v1/SignUp",
         {
           firstName: data.FirstName,
           lastName: data.LastName,
